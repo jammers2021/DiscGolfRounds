@@ -1,4 +1,6 @@
-﻿using DiscGolfRounds.ClassLibrary.Areas.Players.Models;
+﻿using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
+using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
+using DiscGolfRounds.ClassLibrary.Areas.Players.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DiscGolfRounds.ClassLibrary.Areas.Players
 {
-    public class PlayerService : IPlayerService, IPlayerService
+    public class PlayerService : IPlayerService
     {
         private readonly DiscGolfContext _dbContext;
 
