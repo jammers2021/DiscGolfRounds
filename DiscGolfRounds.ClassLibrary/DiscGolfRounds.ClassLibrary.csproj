@@ -7,12 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Courses\Models\" />
     <Folder Include="Areas\Courses\Interfaces\" />
-    <Folder Include="Areas\Players\Models\" />
     <Folder Include="Areas\Players\Interfaces\" />
     <Folder Include="Areas\Rounds\Interfaces\" />
-    <Folder Include="Areas\Rounds\Models\" />
   </ItemGroup>
 
 </Project>
