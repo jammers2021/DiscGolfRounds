@@ -1,4 +1,12 @@
+
+using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
+using DiscGolfRounds.ClassLibrary.Areas.Rounds.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using DiscGolfRounds.ClassLibrary.Areas.Courses;
+using DiscGolfRounds.ClassLibrary.Areas.Players;
+using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
+using DiscGolfRounds.ClassLibrary.Areas.Rounds;
 
 namespace DiscGolfRounds.API
 {
@@ -23,8 +31,6 @@ namespace DiscGolfRounds.API
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IPlayerService, PlayerService>();
             builder.Services.AddScoped<IRoundService, RoundService>();
-            builder.Services.AddScoped<IRoundViewer, RoundViewer>();
-            builder.Services.AddScoped<IScoreLister, ScoreLister>();
             //Consider one service depending on numbers
             //Remove constructors for models--Options class exception, but not relevant
 

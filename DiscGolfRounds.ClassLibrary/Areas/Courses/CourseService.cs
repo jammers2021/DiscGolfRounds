@@ -1,4 +1,7 @@
-﻿using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
+﻿using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
+using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
+using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
