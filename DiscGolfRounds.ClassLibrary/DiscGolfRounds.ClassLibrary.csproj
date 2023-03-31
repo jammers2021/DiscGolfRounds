@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Courses\Interfaces\" />
-    <Folder Include="Areas\Players\Interfaces\" />
-    <Folder Include="Areas\Rounds\Interfaces\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
   </ItemGroup>
 
 </Project>
