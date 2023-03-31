@@ -12,6 +12,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Players.Models
     public class Player
     {
         public int Id { get; set; }
+        [NotMapped]
         public bool HasPDGANumber { get; set; }
         public int? PDGANumber { get; set; }
         [MaxLength(50)]
@@ -19,11 +20,13 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Players.Models
         [MaxLength(50)]
         public string LastName { get; set; }
         public bool Deleted { get; set; }
+        [NotMapped]
         public string FullName {
             get {
                 return $"{FirstName} {LastName}";
             }
         }
+        [NotMapped]
         public List<Round> Rounds { get; set; }
         
     }
