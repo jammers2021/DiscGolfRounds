@@ -1,11 +1,64 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DiscGolfRounds.API.Areas.Courses.Requests;
+using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
+using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
+using DiscGolfRounds.ClassLibrary.Areas.Courses;
+using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiscGolfRounds.API.Areas.Courses
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    [Route("[controller]")]
+    public class CourseController : ControllerBase
     {
+
+        private readonly DiscGolfContext _context;
+        private readonly ICourseService _courseService;
+        public CourseController(DiscGolfContext context, ICourseService courseCreator)
+        {
+            _context = context;
+            _courseService = courseCreator;
+        }
+
+        [HttpPost(nameof(CreateNewCourse))]
+        public async Task<Course> CreateNewCourse(NewCourseRequest request)
+        {
+            CourseService courseCreator = new(_context);
+            CourseVariant courseVariant = await courseCreator.CourseVariantCreatorByPar(request.courseName, request.variantName, request.holePars);
+            var existCheck = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
+            if (existCheck != null)
+                return null;
+            Course course = new();
+            course = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
+
+            return course;
+        }
+        //System.Text.Json.JsonException: A possible object cycle was detected.
+        //This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 32.
+        
+        [HttpGet (nameof(ViewAllCourses))]
+        public async Task<List<Course>> ViewAllCourses()
+        {
+            var courses = await _courseService.AllCourseViewer();
+            return courses;
+        }
+        
+        [HttpPost(nameof(UpdateCourseName))]
+        public async Task<Course> UpdateCourseName(int courseId, string courseName)
+        {
+            return await _courseService.CourseNameUpdater(courseId, courseName);
+        }
+        [HttpPost(nameof(CourseVariantNameUpdater))]
+        public async Task<CourseVariant> CourseVariantNameUpdater(int courseVariantId, string courseVariantName)
+        {
+            return await _courseService.CourseVariantNameUpdater(courseVariantId, courseVariantName);
+        }
+        [HttpPost(nameof(HoleParUpdater))]
+        public async Task<Hole> HoleParUpdater(int holeID, int holePar)
+        {
+            return await _courseService.HoleParUpdater(holeID, holePar);
+        }
+
     }
 }
