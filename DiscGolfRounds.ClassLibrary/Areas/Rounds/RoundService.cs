@@ -26,7 +26,6 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
                 return null;
             }
 
-
             Player? player = await _context.Players.FindAsync(playerID);
             if (player.PDGANumber != null)
             {
@@ -88,14 +87,14 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             return rounds;
         }
 
-        public async Task<CourseVariant> CourseVariantSelection(int variantID)
+        /*public async Task<CourseVariant> CourseVariantSelection(int variantID)
         {
             //using var _context = new DiscGolf_context();
             CourseVariant? variant = await _context.CourseVariants.FindAsync(variantID);
             variant.Course = await _context.Courses.FindAsync(variant.CourseId);
             variant.Holes = await _context.Holes.Where(h => h.CourseVariantID == variantID && h.Deleted == false).ToListAsync();
             return variant;
-        }
+        }*/
         public async Task<Player> AcePlayer(int? playerID)
         {
             if (playerID == null)
@@ -108,6 +107,13 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
         public async Task<List<Score>> AceSelectorIndividualPlayer(int? playerID)
         {
             var scores = await AceSelectorAllPlayers();
+            List<int> roundIDs= new List<int>();
+            foreach (var score in scores)
+            {
+                bool containsID = roundIDs.Contains(score.RoundID);
+                if (!containsID)
+                    roundIDs.Add(score.RoundID);
+            }
             var player = await AcePlayer(playerID);
             if (player.Deleted == true || player == null)
             {
@@ -117,6 +123,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             {
                 player.HasPDGANumber = true;
             }
+            var Rounds = await _context.Rounds.Where(r => roundIDs.Contains(r.Id)).ToListAsync();
             List<Score> playerScore = new();
             foreach (var score in scores)
             {
@@ -137,7 +144,9 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
                 deletedPlayerIds.Add(player.Id);
             }
 
-            List<Score> scores = await _context.Scores.Where(s => s.ScoreOnHole == 1 && s.Deleted == false).Include(s => s.Hole).Include(s => s.Round).Where(s => !deletedPlayerIds.Contains(s.Round.PlayerID)).ToListAsync();
+            List<Score> scores = await _context.Scores.Where(s => s.ScoreOnHole == 1 && s.Deleted == false).Where(s => !deletedPlayerIds.Contains(s.Round.PlayerID)).ToListAsync();
+
+            //List<Score> scores = await _context.Scores.Where(s => s.ScoreOnHole == 1 && s.Deleted == false).Include(s => s.Hole).Include(s => s.Round).Where(s => !deletedPlayerIds.Contains(s.Round.PlayerID)).ToListAsync();
             return scores;
         }
 
@@ -159,7 +168,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             List<Round> rounds = await _context.Rounds.Where(r => roundIDs.Contains(r.Id) && r.Deleted == false).Include(r => r.Player).ToListAsync();
             return rounds;
         }
-        public async Task<List<CourseVariant>> AceVariantSelector(List<Round> rounds)
+        /*public async Task<List<CourseVariant>> AceVariantSelector(List<Round> rounds)
         {
             List<int> variantIDs = new();
             foreach (var round in rounds)
@@ -184,6 +193,67 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             }
             List<Course> courses = await _context.Courses.Where(c => courseIDs.Contains(c.Id) && c.Deleted == false).ToListAsync();
             return courses;
+        }*/
+        //Untested method
+        public async Task<Round> RoundDeleter(int roundID)
+        {
+            var round = await _context.Rounds.FindAsync(roundID);
+            if (round == null)
+                return null;
+            round.Deleted = true;
+            var scores = await _context.Scores.Where(s => s.RoundID == roundID).ToListAsync();
+            foreach (var score in scores)
+            {
+                score.Deleted = true;
+            }
+            await _context.SaveChangesAsync();
+            return round;
+        }
+        public async Task<Round> RoundUpdater(int roundID, int variantID, int? playerID, DateTime dateTime, List<int> scoreList)
+        {
+            var round = await _context.Rounds.FindAsync(roundID);
+            if (round == null)
+                return round;
+            if (variantID == null || variantID < 1 || playerID == null || scoreList == null)
+            {
+                return null;
+            }
+
+            Player? player = await _context.Players.FindAsync(playerID);
+            if (player.PDGANumber != null)
+            {
+                player.HasPDGANumber = true;
+            }
+            CourseVariant? variant = await _context.CourseVariants.FindAsync(variantID);
+            Course course = await _context.Courses.FindAsync(variant.CourseId);
+            List<Hole> holes = await _context.Holes.Where(h => h.CourseVariantID == variantID).ToListAsync();
+            holes.OrderBy(h => h.Id);
+            List<Score> scores = new();
+            round.CourseVariantID = variantID;
+            round.Course = course;
+            round.CourseId = variant.CourseId;
+            round.Variant = variant;
+            round.DatePlayed = dateTime;
+            round.Player = player;
+            round.PlayerID = player.Id;
+            for (int i = 1; i <= holes.Count; i++)
+            {
+                Score score = new();
+                int value = scoreList.ElementAt(i - 1);
+                score.ScoreOnHole = value;
+                int holeNumber = i;
+                var selectedHole = holes.First(h => h.Number == holeNumber);
+                score.Hole = selectedHole;
+                score.HoleID = selectedHole.Id;
+                score.Round = round;
+                score.RoundID = round.Id;
+                scores.Add(score);
+
+            }
+            await _context.Scores.AddRangeAsync(scores);
+            await _context.Rounds.AddAsync(round);
+            await _context.SaveChangesAsync();
+            return round;
         }
     }
 }
