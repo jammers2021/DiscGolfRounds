@@ -2,17 +2,19 @@
 using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
 using DiscGolfRounds.ClassLibrary.Areas.Rounds.Interfaces;
+using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using DiscGolfRounds.ClassLibrary.Areas.Courses;
 using DiscGolfRounds.ClassLibrary.Areas.Players;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Rounds;
+using Microsoft.Data.Sqlite;
 
 namespace DiscGolfRounds.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +23,13 @@ namespace DiscGolfRounds.API
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            var connectionString = builder.Configuration["ConnectionStrings:Sqlite"];
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<DiscGolfContext>(options =>
             {
-                options.UseSqlite("Filename=./DiscGolfEFScores.sqlite");
-
+                options.UseSqlite(builder.Configuration["ConnectionStrings:Sqlite"]);
+                //options.UseSqlite("FileName=D:/Program Files/DiscGolfDataBase/DiscGolfEFScores.sqlite");
             });
-
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IPlayerService, PlayerService>();
             builder.Services.AddScoped<IRoundService, RoundService>();

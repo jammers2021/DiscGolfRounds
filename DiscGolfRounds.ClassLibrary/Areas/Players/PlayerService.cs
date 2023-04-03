@@ -1,6 +1,7 @@
 ﻿using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Players
         }
         public async Task<List<Player>> ViewAllPlayers()
         {
-            var players = _dbContext.Players.Where(p => p.Deleted == false).ToList();
+            var players = await _dbContext.Players.Where(p => p.Deleted == false).ToListAsync();
             foreach (var player in players)
             {
                 if (player.PDGANumber != null) player.HasPDGANumber = true;
