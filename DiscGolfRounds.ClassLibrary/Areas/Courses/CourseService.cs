@@ -1,6 +1,7 @@
 ﻿using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
 using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
+using DiscGolfRounds.ClassLibrary.Areas.Rounds.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -137,5 +138,65 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             }
             return holeList;
         }
+        //Methods below need to be tested
+        public async Task<Course> DeleteCourse(int courseID)
+        {
+            var course = await _dbContext.Courses.FindAsync(courseID);
+            if (course == null) 
+                return course;
+            course.Deleted = true;
+           var variants = await _dbContext.CourseVariants.Where(cv=> cv.CourseId == courseID).ToListAsync();
+            foreach (var variant in variants)
+            {
+                variant.Deleted = true;
+            }
+            var holes = await _dbContext.Holes.Where(h=> h.CourseID == courseID).ToListAsync(); 
+            foreach (var hole in holes)
+            {
+                hole.Deleted = true;
+            }
+            var rounds = await _dbContext.Rounds.Where(r=> r.CourseId== courseID).ToListAsync();
+            List<int> roundIds = new();
+            foreach (var round in rounds)
+            {
+                round.Deleted = true;
+                roundIds.Add(round.Id);
+            }
+            var scores = await _dbContext.Scores.Where(s=> roundIds.Contains(s.RoundID)).ToListAsync();
+            foreach (var score in scores)
+            {
+                score.Deleted = true;
+            }
+            await _dbContext.SaveChangesAsync();
+            return course;
+        }
+        public async Task<CourseVariant> DeleteCourseVariant(int variantID)
+        {
+            var variant = await _dbContext.CourseVariants.FindAsync(variantID);
+            if (variant == null)
+                return variant;
+            variant.Deleted = true;
+            
+            var holes = await _dbContext.Holes.Where(h => h.CourseVariantID == variantID).ToListAsync();
+            foreach (var hole in holes)
+            {
+                hole.Deleted = true;
+            }
+            var rounds = await _dbContext.Rounds.Where(r => r.CourseVariantID == variantID).ToListAsync();
+            List<int> roundIds = new();
+            foreach (var round in rounds)
+            {
+                round.Deleted = true;
+                roundIds.Add(round.Id);
+            }
+            var scores = await _dbContext.Scores.Where(s => roundIds.Contains(s.RoundID)).ToListAsync();
+            foreach (var score in scores)
+            {
+                score.Deleted = true;
+            }
+            await _dbContext.SaveChangesAsync();
+            return variant;
+        }
+       
     }
 }

@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Rounds\Requests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DiscGolfRounds.ClassLibrary\DiscGolfRounds.ClassLibrary.csproj" />
   </ItemGroup>
 
