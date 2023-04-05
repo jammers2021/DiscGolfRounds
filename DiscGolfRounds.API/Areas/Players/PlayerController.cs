@@ -1,7 +1,7 @@
 ﻿using DiscGolfRounds.API.Areas.Players.Requests;
-using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Models;
+using DiscGolfRounds.ClassLibrary.DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -9,9 +9,9 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscGolfRounds.ClassLibrary.Areas.DataAccess
+namespace DiscGolfRounds.ClassLibrary.DataAccess
 {
-    public class DiscGolfContext : DbContext, IDiscGolfContext
+    public class DiscGolfContext : DbContext
     {
         public DiscGolfContext() : base() { }
         public DiscGolfContext(DbContextOptions<DiscGolfContext> options) : base(options) { }
@@ -34,19 +34,19 @@ namespace DiscGolfRounds.ClassLibrary.Areas.DataAccess
             */
 
             modelBuilder.Entity<Hole>()
-                .HasOne<CourseVariant>(h => h.CourseVariant)
+                .HasOne(h => h.CourseVariant)
                 .WithMany(cv => cv.Holes)
                 .HasForeignKey(cv => cv.CourseVariantID);
 
 
             modelBuilder.Entity<Hole>()
-                .HasOne<CourseVariant>(h => h.CourseVariant)
+                .HasOne(h => h.CourseVariant)
                 .WithMany(cv => cv.Holes)
                 .HasForeignKey(h => h.CourseVariantID);
 
 
             modelBuilder.Entity<Player>()
-                 .HasMany<Round>(p => p.Rounds)
+                 .HasMany(p => p.Rounds)
                  .WithOne(r => r.Player)
                  .HasForeignKey(r => r.PlayerID);
             /*
@@ -60,7 +60,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.DataAccess
                 .HasMany<Score>(r => r.Scores)
                 .WithOne(s => s.Round)
                 .HasForeignKey(s => s.RoundID);
-            */  
+            */
         }
     }
 }
