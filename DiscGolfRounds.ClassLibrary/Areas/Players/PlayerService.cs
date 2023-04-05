@@ -1,6 +1,6 @@
-﻿using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
-using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
+﻿using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Models;
+using DiscGolfRounds.ClassLibrary.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

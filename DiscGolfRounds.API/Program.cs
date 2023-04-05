@@ -1,6 +1,5 @@
 
 using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
-using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
 using DiscGolfRounds.ClassLibrary.Areas.Rounds.Interfaces;
 using Microsoft.EntityFrameworkCore.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using DiscGolfRounds.ClassLibrary.Areas.Players;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Rounds;
 using Microsoft.Data.Sqlite;
+using DiscGolfRounds.ClassLibrary.DataAccess;
 
 namespace DiscGolfRounds.API
 {

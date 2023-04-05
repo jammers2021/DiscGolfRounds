@@ -2,9 +2,9 @@
 using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
 using DiscGolfRounds.ClassLibrary.Areas.Courses;
-using DiscGolfRounds.ClassLibrary.Areas.DataAccess;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using DiscGolfRounds.ClassLibrary.DataAccess;
 
 namespace DiscGolfRounds.API.Areas.Courses
 {
