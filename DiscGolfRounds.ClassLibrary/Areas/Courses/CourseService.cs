@@ -20,25 +20,32 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             _dbContext = dbContext;
         }
 
-        public async Task<CourseVariant> CourseVariantCreatorByPar(string courseName, string variantName, List<int> pars)
+        public async Task<Course> CourseVariantCreatorByPar(string courseName, string variantName, List<int> pars)
         {
-            Course course = new();
-            CourseVariant variant = new();
+            Course course;
 
-            course.Name = courseName;
-            course.Deleted = false;
-            course.VariantIds = new();
-
-            if (_dbContext.Courses.FirstOrDefault(c => c.Name == courseName) != null)
+            var existingCourse = _dbContext.Courses.FirstOrDefault(c => c.Name == courseName);
+            if (existingCourse != null)
             {
-                course = _dbContext.Courses.First(c => c.Name == courseName);
+                course = existingCourse;
             }
             else
             {
+                course = new Course
+                {
+                    Name = courseName,
+                    Deleted = false,
+                };
                 await _dbContext.Courses.AddAsync(course);
             }
-            
-            variant.Name = variantName;
+
+            var variant = new CourseVariant
+            {
+                Name = variantName,
+                Course = course,
+                Deleted = false
+            };
+
             await _dbContext.CourseVariants.AddAsync(variant);
             
 
@@ -60,7 +67,6 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             for (int i = 1; i <= pars.Count; i++)
             {
                 Hole hole = new();
-                hole.Course = course;
                 hole.CourseVariant = variant;
                 hole.Number = i;
                 hole.Par = pars[i-1];
@@ -85,23 +91,24 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             //holes.AddRange(holesList);
             //variant.Holes = holesList;
 
-            variant.Holes = holes;
-            variant.Course = course;
-            variant.Deleted = false;
+            //variant.Holes = holes;
+            //variant.Course = course;
+            //variant.Deleted = false;
             await _dbContext.Holes.AddRangeAsync(holes);
 
             await _dbContext.SaveChangesAsync();
-            var newCourse = await _dbContext.Courses.FirstAsync(c=> c.Name == courseName);
-            variant.CourseId = newCourse.Id;
-            foreach (var hole in holes)
-            {
-                hole.CourseID = newCourse.Id;
-            }
 
-            _dbContext.UpdateRange(holes);
-            _dbContext.Update(variant);
-            await _dbContext.SaveChangesAsync();
-            return variant;
+            //var newCourse = await _dbContext.Courses.FirstAsync(c=> c.Name == courseName);
+            //variant.CourseId = newCourse.Id;
+            //foreach (var hole in holes)
+            //{
+            //    hole.CourseID = newCourse.Id;
+            //}
+
+            //_dbContext.UpdateRange(holes);
+            //_dbContext.Update(variant);
+            //await _dbContext.SaveChangesAsync();
+            return course;
         }
         public async Task<Course> CourseNameUpdater(int courseId, string courseName)
         {
@@ -129,78 +136,81 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
 
         public async Task<List<Course>> AllCourseViewer()
         {
-            var courses = await _dbContext.Courses.Where(c=> c.Deleted != true).ToListAsync();
-            var courseVariants = await _dbContext.CourseVariants.Where(cv=>cv.Deleted != true).ToListAsync();
-            for (int i = 0; i < courses.Count; i++)
-            {
-                var course = courses[i];
-                course.VariantIds = new();
-                foreach (var variant in courseVariants)
-                {
-                    if (variant.CourseId == course.Id)
-                        course.VariantIds.Add(variant.Id);
-                }
-            }
+            var courses = await _dbContext.Courses
+                .Include(c => c.Variants)
+                .Where(c=> c.Deleted != true).ToListAsync();
+
+            //var courseVariants = await _dbContext.CourseVariants.Where(cv=>cv.Deleted != true).ToListAsync();
+            //for (int i = 0; i < courses.Count; i++)
+            //{
+            //    var course = courses[i];
+            //    course.VariantIds = new();
+            //    foreach (var variant in courseVariants)
+            //    {
+            //        if (variant.CourseId == course.Id)
+            //            course.VariantIds.Add(variant.Id);
+            //    }
+            //}
             return courses; 
         }
         public async Task<List<Hole>> ViewAllHolesAtCourse(int courseID)
         {
-            var holes = await _dbContext.Holes.Where(h => h.CourseID == courseID).ToListAsync();
-            var courseVariant = await _dbContext.CourseVariants.Where(cv => cv.CourseId == courseID).ToListAsync();
-            var course = await _dbContext.Courses.FirstAsync(c => c.Id == courseID);
-            List<Hole> holeList = new();
-            foreach (var hole in holes)
-            {
-                hole.Course = course;
-                hole.CourseVariant = courseVariant.FirstOrDefault(cv => cv.Id == hole.CourseVariantID);
-                holeList.Add(hole);
-            }
-            return holeList;
+            //var holes = await _dbContext.Holes.Where(h => h.CourseID == courseID).ToListAsync();
+            //var courseVariant = await _dbContext.CourseVariants.Where(cv => cv.CourseId == courseID).ToListAsync();
+            //var course = await _dbContext.Courses.FirstAsync(c => c.Id == courseID);
+            //List<Hole> holeList = new();
+            //foreach (var hole in holes)
+            //{
+            //    hole.CourseVariant = courseVariant.FirstOrDefault(cv => cv.Id == hole.CourseVariantID);
+            //    holeList.Add(hole);
+            //}
+            //return holeList;
+            throw new NotImplementedException();
         }
         public async Task<List<Hole>> ViewAllHolesAtCourseVariant(int courseVariantID)
         {
-            var holes = await _dbContext.Holes.Where(h => h.CourseVariantID == courseVariantID).ToListAsync();
-            var courseVariant = await _dbContext.CourseVariants.FirstAsync(cv => cv.Id == courseVariantID);
-            var course = await _dbContext.Courses.FirstAsync(c => c.Id == courseVariant.CourseId);
+            //var holes = await _dbContext.Holes.Where(h => h.CourseVariantID == courseVariantID).ToListAsync();
+            //var courseVariant = await _dbContext.CourseVariants.FirstAsync(cv => cv.Id == courseVariantID);
+            //var course = await _dbContext.Courses.FirstAsync(c => c.Id == courseVariant.CourseId);
             List<Hole> holeList = new();
-            foreach (var hole in holes)
-            {
-                hole.Course = course;
-                hole.CourseVariant = courseVariant;
-                holeList.Add(hole);
-            }
+            //foreach (var hole in holes)
+            //{
+            //    hole.Course = course;
+            //    hole.CourseVariant = courseVariant;
+            //    holeList.Add(hole);
+            //}
             return holeList;
         }
         //Methods below need to be tested
         public async Task<Course> DeleteCourse(int courseID)
         {
             var course = await _dbContext.Courses.FindAsync(courseID);
-            if (course == null) 
-                return course;
-            course.Deleted = true;
-           var variants = await _dbContext.CourseVariants.Where(cv=> cv.CourseId == courseID).ToListAsync();
-            foreach (var variant in variants)
-            {
-                variant.Deleted = true;
-            }
-            var holes = await _dbContext.Holes.Where(h=> h.CourseID == courseID).ToListAsync(); 
-            foreach (var hole in holes)
-            {
-                hole.Deleted = true;
-            }
-            var rounds = await _dbContext.Rounds.Where(r=> r.CourseId== courseID).ToListAsync();
-            List<int> roundIds = new();
-            foreach (var round in rounds)
-            {
-                round.Deleted = true;
-                roundIds.Add(round.Id);
-            }
-            var scores = await _dbContext.Scores.Where(s=> roundIds.Contains(s.RoundID)).ToListAsync();
-            foreach (var score in scores)
-            {
-                score.Deleted = true;
-            }
-            await _dbContext.SaveChangesAsync();
+           // if (course == null) 
+           //     return course;
+           // course.Deleted = true;
+           //var variants = await _dbContext.CourseVariants.Where(cv=> cv.CourseId == courseID).ToListAsync();
+           // foreach (var variant in variants)
+           // {
+           //     variant.Deleted = true;
+           // }
+           // var holes = await _dbContext.Holes.Where(h=> h.CourseID == courseID).ToListAsync(); 
+           // foreach (var hole in holes)
+           // {
+           //     hole.Deleted = true;
+           // }
+           // var rounds = await _dbContext.Rounds.Where(r=> r.CourseId== courseID).ToListAsync();
+           // List<int> roundIds = new();
+           // foreach (var round in rounds)
+           // {
+           //     round.Deleted = true;
+           //     roundIds.Add(round.Id);
+           // }
+           // var scores = await _dbContext.Scores.Where(s=> roundIds.Contains(s.RoundID)).ToListAsync();
+           // foreach (var score in scores)
+           // {
+           //     score.Deleted = true;
+           // }
+           // await _dbContext.SaveChangesAsync();
             return course;
         }
         public async Task<CourseVariant> DeleteCourseVariant(int variantID)
