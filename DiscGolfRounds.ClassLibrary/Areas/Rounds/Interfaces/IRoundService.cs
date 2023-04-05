@@ -17,5 +17,6 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds.Interfaces
         Task<List<Round>> RoundsAtCourseVariant(int variantID, int? playerID);
         Task<Round> RoundDeleter(int roundID);
         Task<Round> RoundUpdater(int roundID, int variantID, int? playerID, DateTime dateTime, List<int> scoreList);
+        Task<Round> UndoRoundDeleter(int roundID);
     }
 }

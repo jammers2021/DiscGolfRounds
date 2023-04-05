@@ -49,5 +49,17 @@ namespace DiscGolfRounds.API.Areas.Rounds
             var round = await _roundService.RoundUpdater(roundUpdaterRequest.roundID, roundUpdaterRequest.variantID, roundUpdaterRequest.playerID, roundUpdaterRequest.dateTime, roundUpdaterRequest.scoreList);
             return round;
         }
+        [HttpGet(nameof(RoundDeleter))]
+        public async Task<Round> RoundDeleter(int roundID)
+        {
+            var round = await _roundService.RoundDeleter(roundID);
+            return round;
+        }
+        [HttpGet(nameof(UndoRoundDeleter))]
+        public async Task<Round> UndoRoundDeleter(int roundID)
+        {
+            var round = await _roundService.UndoRoundDeleter(roundID);
+            return round;
+        }
     } 
 }

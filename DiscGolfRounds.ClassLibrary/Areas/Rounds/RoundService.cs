@@ -78,7 +78,6 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             {
                 round.Course = variant.Course;
                 round.CourseVariantID = variantID;
-                round.Scores = await _context.Scores.Where(s => s.RoundID == round.Id).ToListAsync();
             }
             if (player.Deleted == true || variant.Deleted == true)
             {
@@ -168,32 +167,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             List<Round> rounds = await _context.Rounds.Where(r => roundIDs.Contains(r.Id) && r.Deleted == false).Include(r => r.Player).ToListAsync();
             return rounds;
         }
-        /*public async Task<List<CourseVariant>> AceVariantSelector(List<Round> rounds)
-        {
-            List<int> variantIDs = new();
-            foreach (var round in rounds)
-            {
-                if (!variantIDs.Contains(round.CourseVariantID))
-                {
-                    variantIDs.Add(round.CourseVariantID);
-                }
-            }
-            List<CourseVariant> variants = await _context.CourseVariants.Where(cv => variantIDs.Contains(cv.Id) && cv.Deleted == false).ToListAsync();
-            return variants;
-        }
-        public async Task<List<Course>> AceCourseSelector(List<CourseVariant> variants)
-        {
-            List<int> courseIDs = new();
-            foreach (var variant in variants)
-            {
-                if (!courseIDs.Contains(variant.CourseId))
-                {
-                    courseIDs.Add(variant.CourseId);
-                }
-            }
-            List<Course> courses = await _context.Courses.Where(c => courseIDs.Contains(c.Id) && c.Deleted == false).ToListAsync();
-            return courses;
-        }*/
+        
         //Untested method
         public async Task<Round> RoundDeleter(int roundID)
         {
@@ -207,6 +181,14 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
                 score.Deleted = true;
             }
             await _context.SaveChangesAsync();
+            return round;
+        }
+        public async Task<Round> UndoRoundDeleter(int roundID)
+        {
+            var round = await _context.Rounds.FindAsync(roundID);
+            if (round == null)
+                return null;
+            round.Deleted = false;
             return round;
         }
         public async Task<Round> RoundUpdater(int roundID, int variantID, int? playerID, DateTime dateTime, List<int> scoreList)
@@ -255,5 +237,6 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Rounds
             await _context.SaveChangesAsync();
             return round;
         }
+
     }
 }

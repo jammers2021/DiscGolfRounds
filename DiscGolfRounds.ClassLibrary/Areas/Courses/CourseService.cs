@@ -26,6 +26,8 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             CourseVariant variant = new();
 
             course.Name = courseName;
+            course.Deleted = false;
+            course.VariantIds = new();
 
             if (_dbContext.Courses.FirstOrDefault(c => c.Name == courseName) != null)
             {
@@ -35,9 +37,13 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             {
                 await _dbContext.Courses.AddAsync(course);
             }
+            
             variant.Name = variantName;
-            variant.CourseId = course.Id;
+            await _dbContext.CourseVariants.AddAsync(variant);
+            
 
+            //variant.Holes
+            /*
             if (course.Variants == null)
             {
                 course.Variants = new List<CourseVariant>();
@@ -48,37 +54,52 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             }
             await _dbContext.CourseVariants.AddAsync(variant);
             course.Variants.Add(variant);
+            */
 
             List<Hole> holes = new();
-            /*for (int i = 1; i <= pars.Count; i++)
+            for (int i = 1; i <= pars.Count; i++)
             {
                 Hole hole = new();
                 hole.Course = course;
-                hole.CourseVariantID = variant.Id;
                 hole.CourseVariant = variant;
                 hole.Number = i;
                 hole.Par = pars[i-1];
                 holes.Add(hole);
-            };*/
-
+                hole.Deleted= false;
+            };
+            /*
             var holesList = pars.Select((value, index) => new Hole
             {
                 Course = course,
                 CourseID = course.Id,
-                CourseVariant = variant,
                 CourseVariantID = variant.Id,
                 Number = index + 1,
                 Par = value,
+                Deleted= false,
+                CourseVariant = variant,
 
             }).ToList();
+            */
+            
 
-            holes.AddRange(holesList);
+            //holes.AddRange(holesList);
+            //variant.Holes = holesList;
 
             variant.Holes = holes;
+            variant.Course = course;
+            variant.Deleted = false;
             await _dbContext.Holes.AddRangeAsync(holes);
 
+            await _dbContext.SaveChangesAsync();
+            var newCourse = await _dbContext.Courses.FirstAsync(c=> c.Name == courseName);
+            variant.CourseId = newCourse.Id;
+            foreach (var hole in holes)
+            {
+                hole.CourseID = newCourse.Id;
+            }
 
-
+            _dbContext.UpdateRange(holes);
+            _dbContext.Update(variant);
             await _dbContext.SaveChangesAsync();
             return variant;
         }
@@ -108,7 +129,19 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
 
         public async Task<List<Course>> AllCourseViewer()
         {
-            return await _dbContext.Courses.Include(c => c.Variants).ToListAsync();
+            var courses = await _dbContext.Courses.Where(c=> c.Deleted != true).ToListAsync();
+            var courseVariants = await _dbContext.CourseVariants.Where(cv=>cv.Deleted != true).ToListAsync();
+            for (int i = 0; i < courses.Count; i++)
+            {
+                var course = courses[i];
+                course.VariantIds = new();
+                foreach (var variant in courseVariants)
+                {
+                    if (variant.CourseId == course.Id)
+                        course.VariantIds.Add(variant.Id);
+                }
+            }
+            return courses; 
         }
         public async Task<List<Hole>> ViewAllHolesAtCourse(int courseID)
         {
@@ -197,6 +230,22 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses
             await _dbContext.SaveChangesAsync();
             return variant;
         }
-       
+        public async Task<Course> UndoCourseDeleter(int courseID)
+        {
+            var course = await _dbContext.Courses.FindAsync(courseID);
+            course.Deleted = false;
+            _dbContext.Update(course);
+            await _dbContext.SaveChangesAsync();
+            return course;
+        }
+        public async Task<CourseVariant> UndoCourseVariantDeleter(int courseID)
+        {
+            var variant = await _dbContext.CourseVariants.FindAsync(courseID);
+            variant.Deleted = false;
+            _dbContext.Update(variant);
+            await _dbContext.SaveChangesAsync();
+            return variant;
+        }
+
     }
 }

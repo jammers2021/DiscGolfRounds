@@ -13,5 +13,8 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces
         Task<List<Hole>> ViewAllHolesAtCourseVariant(int courseVariantID);
         Task<CourseVariant> DeleteCourseVariant(int variantID);
         Task<Course> DeleteCourse(int courseID);
+        Task<Course> UndoCourseDeleter(int courseID);
+        Task<CourseVariant> UndoCourseVariantDeleter(int courseID);
+
     }
 }
