@@ -18,7 +18,6 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
 
         [NotMapped]
         public List<int> VariantIds { get; set; }
-        [NotMapped]
-        public List<CourseVariant> Variants { get; set; }
+        
     }
 }

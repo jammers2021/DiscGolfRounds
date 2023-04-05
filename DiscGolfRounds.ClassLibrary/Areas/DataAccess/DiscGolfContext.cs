@@ -26,10 +26,12 @@ namespace DiscGolfRounds.ClassLibrary.Areas.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            /*
             modelBuilder.Entity<Course>()
-                .HasMany<CourseVariant>(c => c.Variants)
+                .HasMany<CourseVariant>(c => c.VariantIds)
                 .WithOne(v => v.Course)
                 .HasForeignKey(v => v.CourseId);
+            */
 
             modelBuilder.Entity<Hole>()
                 .HasOne<CourseVariant>(h => h.CourseVariant)
@@ -47,7 +49,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.DataAccess
                  .HasMany<Round>(p => p.Rounds)
                  .WithOne(r => r.Player)
                  .HasForeignKey(r => r.PlayerID);
-
+            /*
             modelBuilder.Entity<Round>()
                 .HasMany<Score>(r => r.Scores)
                 .WithOne(s => s.Round)
@@ -58,6 +60,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.DataAccess
                 .HasMany<Score>(r => r.Scores)
                 .WithOne(s => s.Round)
                 .HasForeignKey(s => s.RoundID);
+            */  
         }
     }
 }

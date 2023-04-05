@@ -25,7 +25,7 @@ namespace DiscGolfRounds.API.Areas.Courses
         public async Task<Course> CreateNewCourse(NewCourseRequest request)
         {
             CourseService courseCreator = new(_context);
-            CourseVariant courseVariant = await courseCreator.CourseVariantCreatorByPar(request.courseName, request.variantName, request.holePars);
+            CourseVariant courseVariant = await courseCreator.CourseVariantCreatorByPar(request. courseName, request.variantName, request.holePars);
             var existCheck = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
             if (existCheck != null)
                 return null;
@@ -58,6 +58,21 @@ namespace DiscGolfRounds.API.Areas.Courses
         public async Task<Hole> HoleParUpdater(int holeID, int holePar)
         {
             return await _courseService.HoleParUpdater(holeID, holePar);
+        }
+        [HttpPost(nameof(CourseDeleter))]
+        public async Task<Course> CourseDeleter(int courseID)
+        {
+            return await _courseService.DeleteCourse(courseID);
+        }
+        [HttpGet(nameof(UndoCourseDeleter))]
+        public async Task<Course> UndoCourseDeleter(int courseID)
+        {
+            return await _courseService.UndoCourseDeleter(courseID);
+        }
+        [HttpGet(nameof(UndoCourseVariantDeleter))]
+        public async Task<CourseVariant> UndoCourseVariantDeleter(int courseID)
+        {
+            return await _courseService.UndoCourseVariantDeleter(courseID);
         }
 
     }
