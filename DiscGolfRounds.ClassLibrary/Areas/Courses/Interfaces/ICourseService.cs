@@ -6,7 +6,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces
     {
         Task<List<Course>> AllCourseViewer();
         Task<Course> CourseNameUpdater(int courseId, string courseName);
-        Task<CourseVariant> CourseVariantCreatorByPar(string courseName, string variantName, List<int> pars);
+        Task<Course> CourseVariantCreatorByPar(string courseName, string variantName, List<int> pars);
         Task<CourseVariant> CourseVariantNameUpdater(int courseVariantId, string courseVariantName);
         Task<Hole> HoleParUpdater(int holeId, int holePar);
         Task<List<Hole>> ViewAllHolesAtCourse(int courseID);
