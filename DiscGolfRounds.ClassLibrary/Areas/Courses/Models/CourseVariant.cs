@@ -19,8 +19,8 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
         public Course Course { get; set; }
         public bool Deleted { get; set; }
         [NotMapped]
-        public List<Hole> Holes { get; set; }
 
+        public List<Hole> Holes { get; set; }
         [NotMapped]
         public int NumberOfHoles => Holes.Count;
         [NotMapped]

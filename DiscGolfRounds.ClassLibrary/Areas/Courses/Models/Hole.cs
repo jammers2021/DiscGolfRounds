@@ -20,6 +20,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
         [ForeignKey(nameof(CourseVariant))]
         public int CourseVariantID { get; set; }
         public bool Deleted { get; set; }
+
         [NotMapped]
         public CourseVariant CourseVariant { get; set; }
 

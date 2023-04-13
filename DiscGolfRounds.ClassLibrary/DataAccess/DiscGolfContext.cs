@@ -25,15 +25,19 @@ namespace DiscGolfRounds.ClassLibrary.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            /*
             modelBuilder.Entity<Course>()
-                .HasMany(c => c.Variants)
+                .HasMany<CourseVariant>(c => c.VariantIds)
                 .WithOne(v => v.Course)
                 .HasForeignKey(v => v.CourseId);
+            */
 
             modelBuilder.Entity<CourseVariant>()
                 .HasMany(cv => cv.Holes)
                 .WithOne(h => h.CourseVariant)
                 .HasForeignKey(h => h.CourseVariantID);
+
 
             modelBuilder.Entity<Hole>()
                 .HasOne(h => h.CourseVariant)

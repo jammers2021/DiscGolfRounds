@@ -9,6 +9,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces
         Task<Course> CreateCourseByPar(string courseName, string variantName, List<int> pars);
         Task<CourseVariant> UpdateCourseVariantName(int courseVariantId, string courseVariantName);
         Task<Hole> UpdateHolePar(int holeId, int holePar);
+
         Task<List<Hole>> ViewAllHolesAtCourseVariant(int courseVariantID);
         Task<CourseVariant> DeleteCourseVariant(int variantID);
         Task<Course> DeleteCourse(int courseID);
