@@ -4,6 +4,8 @@ using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
 using DiscGolfRounds.ClassLibrary.Areas.Courses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using DiscGolfRounds.ClassLibrary.DataAccess.DTOs;
 using DiscGolfRounds.ClassLibrary.DataAccess;
 
 namespace DiscGolfRounds.API.Areas.Courses
@@ -15,64 +17,77 @@ namespace DiscGolfRounds.API.Areas.Courses
 
         private readonly DiscGolfContext _context;
         private readonly ICourseService _courseService;
-        public CourseController(DiscGolfContext context, ICourseService courseCreator)
+
+        private readonly IMapper _mapper;
+        public CourseController(ICourseService courseCreator, IMapper mapper)
+
         {
             _context = context;
             _courseService = courseCreator;
+            _mapper = mapper;
         }
 
         [HttpPost(nameof(CreateNewCourse))]
-        public async Task<Course> CreateNewCourse(NewCourseRequest request)
+        public async Task<CourseDTO> CreateNewCourse(NewCourseRequest request)
         {
-            CourseService courseCreator = new(_context);
-            CourseVariant courseVariant = await courseCreator.CourseVariantCreatorByPar(request. courseName, request.variantName, request.holePars);
-            var existCheck = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
-            if (existCheck != null)
-                return null;
-            Course course = new();
-            course = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
 
-            return course;
+           Course course = await _courseService.CreateCourseByPar(request. courseName, request.variantName, request.holePars);
+
+
+            return _mapper.Map<CourseDTO>(course);
         }
         //System.Text.Json.JsonException: A possible object cycle was detected.
         //This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 32.
         
         [HttpGet (nameof(ViewAllCourses))]
-        public async Task<List<Course>> ViewAllCourses()
+        public async Task<List<CourseDTO>> ViewAllCourses()
         {
-            var courses = await _courseService.AllCourseViewer();
-            return courses;
+            var courses = await _courseService.ViewAllCourses();
+            var courseDTOs = courses.Select(c=> _mapper.Map<CourseDTO>(c)).ToList();
+            return courseDTOs;
         }
-        
-        [HttpPost(nameof(UpdateCourseName))]
-        public async Task<Course> UpdateCourseName(int courseId, string courseName)
+        [HttpGet(nameof(ViewAllCourseVariants))]
+        public async Task<List<CourseVariantDTO>> ViewAllCourseVariants()
         {
-            return await _courseService.CourseNameUpdater(courseId, courseName);
+            var variants = await _courseService.ViewAllCourseVariants();
+            return variants.Select(cv => _mapper.Map<CourseVariantDTO>(cv)).ToList();
+        }
+
+        [HttpPost(nameof(UpdateCourseName))]
+        public async Task<CourseDTO> UpdateCourseName(int courseId, string courseName)
+        {
+            var course = await _courseService.UpdateCourseName(courseId, courseName);
+            return _mapper.Map<CourseDTO>(course);
         }
         [HttpPost(nameof(CourseVariantNameUpdater))]
-        public async Task<CourseVariant> CourseVariantNameUpdater(int courseVariantId, string courseVariantName)
+        public async Task<CourseVariantDTO> CourseVariantNameUpdater(int courseVariantId, string courseVariantName)
         {
-            return await _courseService.CourseVariantNameUpdater(courseVariantId, courseVariantName);
+            var variant = await _courseService.UpdateCourseVariantName(courseVariantId, courseVariantName);
+            return _mapper.Map<CourseVariantDTO>(variant);
         }
         [HttpPost(nameof(HoleParUpdater))]
-        public async Task<Hole> HoleParUpdater(int holeID, int holePar)
+        public async Task<HoleDTO> HoleParUpdater(int holeID, int holePar)
         {
-            return await _courseService.HoleParUpdater(holeID, holePar);
+            var hole = await _courseService.UpdateHolePar(holeID, holePar);
+            return _mapper.Map<HoleDTO>(hole);
         }
         [HttpPost(nameof(CourseDeleter))]
-        public async Task<Course> CourseDeleter(int courseID)
+        public async Task<CourseDTO> CourseDeleter(int courseID)
         {
-            return await _courseService.DeleteCourse(courseID);
+            var course = await _courseService.DeleteCourse(courseID);
+            return _mapper.Map<CourseDTO>(course);
         }
         [HttpGet(nameof(UndoCourseDeleter))]
-        public async Task<Course> UndoCourseDeleter(int courseID)
+        public async Task<CourseDTO> UndoCourseDeleter(int courseID)
         {
-            return await _courseService.UndoCourseDeleter(courseID);
+            var course = await _courseService.UndoDeleteCourse(courseID);
+            return _mapper.Map<CourseDTO>(course);
         }
         [HttpGet(nameof(UndoCourseVariantDeleter))]
-        public async Task<CourseVariant> UndoCourseVariantDeleter(int courseID)
+        public async Task<CourseVariantDTO> UndoCourseVariantDeleter(int courseID)
         {
-            return await _courseService.UndoCourseVariantDeleter(courseID);
+            var variant = await _courseService.UndoDeleteCourseVariant(courseID);
+            return _mapper.Map<CourseVariantDTO>(variant);
         }
 
     }

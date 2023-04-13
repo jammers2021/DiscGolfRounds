@@ -1,15 +1,15 @@
-﻿using System;
-using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
+﻿using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
+namespace DiscGolfRounds.ClassLibrary.DataAccess.DTOs
 {
-    public class Hole
+    public class HoleDTO
     {
         [Key]
         public int Id { get; set; }
@@ -17,12 +17,8 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
         public string? Name { get; set; }
         public int Number { get; set; }
         public int Par { get; set; }
-        [ForeignKey(nameof(CourseVariant))]
-        public int CourseVariantID { get; set; }
+        public CourseVariantDTO CourseVariant { get; set; }
         public bool Deleted { get; set; }
-
-        [NotMapped]
-        public CourseVariant CourseVariant { get; set; }
 
     }
 }

@@ -33,34 +33,29 @@ namespace DiscGolfRounds.ClassLibrary.DataAccess
                 .HasForeignKey(v => v.CourseId);
             */
 
-            modelBuilder.Entity<Hole>()
-                .HasOne(h => h.CourseVariant)
-                .WithMany(cv => cv.Holes)
-                .HasForeignKey(cv => cv.CourseVariantID);
-
-
-            modelBuilder.Entity<Hole>()
-                .HasOne(h => h.CourseVariant)
-                .WithMany(cv => cv.Holes)
+            modelBuilder.Entity<CourseVariant>()
+                .HasMany(cv => cv.Holes)
+                .WithOne(h => h.CourseVariant)
                 .HasForeignKey(h => h.CourseVariantID);
 
+
+            modelBuilder.Entity<Hole>()
+                .HasOne(h => h.CourseVariant)
+                .WithMany(cv => cv.Holes)
+               .HasForeignKey(cv => cv.CourseVariantID);
 
             modelBuilder.Entity<Player>()
                  .HasMany(p => p.Rounds)
                  .WithOne(r => r.Player)
                  .HasForeignKey(r => r.PlayerID);
-            /*
-            modelBuilder.Entity<Round>()
-                .HasMany<Score>(r => r.Scores)
-                .WithOne(s => s.Round)
-                .HasForeignKey(s => s.RoundID);
+
+            modelBuilder.Entity<Score>()
+                .HasOne(s=> s.Round)
+                .WithMany(r=> r.Scores)
+                .HasForeignKey(s=> s.RoundID);
 
 
-            modelBuilder.Entity<Round>()
-                .HasMany<Score>(r => r.Scores)
-                .WithOne(s => s.Round)
-                .HasForeignKey(s => s.RoundID);
-            */
+            
         }
     }
 }

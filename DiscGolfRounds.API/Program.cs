@@ -33,8 +33,9 @@ namespace DiscGolfRounds.API
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IPlayerService, PlayerService>();
             builder.Services.AddScoped<IRoundService, RoundService>();
-            //Consider one service depending on numbers
-            //Remove constructors for models--Options class exception, but not relevant
+
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 
 
 

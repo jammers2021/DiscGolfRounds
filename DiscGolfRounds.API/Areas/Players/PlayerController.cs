@@ -1,9 +1,12 @@
-﻿using DiscGolfRounds.API.Areas.Players.Requests;
+﻿using AutoMapper;
+using DiscGolfRounds.API.Areas.Players.Requests;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Models;
 using DiscGolfRounds.ClassLibrary.DataAccess;
+using DiscGolfRounds.ClassLibrary.DataAccess.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace DiscGolfRounds.API.Areas.Players
 {
@@ -13,40 +16,44 @@ namespace DiscGolfRounds.API.Areas.Players
     {
         private readonly DiscGolfContext _context;
         private readonly IPlayerService _playerService;
-        public PlayerController(DiscGolfContext context, IPlayerService playerService)
+        private readonly IMapper _mapper;
+        public PlayerController(DiscGolfContext context, IPlayerService playerService, IMapper mapper)
         {
             _context = context;
             _playerService = playerService;
+            _mapper = mapper;
         }
         [HttpPost(nameof(CreateNewPlayer))]
-        public async Task<Player> CreateNewPlayer(NewPlayerRequest newPlayerRequest)
+        public async Task<PlayerDTO> CreateNewPlayer(NewPlayerRequest newPlayerRequest)
         {
             var player = await _playerService.CreatePlayer(newPlayerRequest.firstName, newPlayerRequest.lastName, newPlayerRequest.hasPDGANumber, newPlayerRequest.pdgaNumber);
-            return player;
+            return _mapper.Map<PlayerDTO>(player);
         }
         [HttpGet(nameof(ViewAllPlayers))]
-        public async Task<List<Player>> ViewAllPlayers()
+        public async Task<List<PlayerDTO>> ViewAllPlayers()
         {
             var players = await _playerService.ViewAllPlayers();
-            return players;
+            return players.Select(p=> _mapper.Map<PlayerDTO>(p)).ToList();
 
         }
         [HttpPost(nameof(UpdatePlayer))]
-        public async Task<Player> UpdatePlayer(UpdatePlayerRequest updatePlayerRequest)
+        public async Task<PlayerDTO> UpdatePlayer(UpdatePlayerRequest updatePlayerRequest)
         {
             var player = await _playerService.PlayerUpdater(updatePlayerRequest.Id, updatePlayerRequest.firstName, updatePlayerRequest.lastName,
                 updatePlayerRequest.hasPDGANumber, updatePlayerRequest.pdgaNumber);
-            return player;
+            return _mapper.Map<PlayerDTO>(player);
         }
         [HttpPost(nameof(PlayerDeleter))]
-        public async Task<Player> PlayerDeleter(int playerID)
+        public async Task<PlayerDTO> PlayerDeleter(int playerID)
         {
-            return await _playerService.PlayerDeleter(playerID);
+            var player = await _playerService.PlayerDeleter(playerID);
+            return _mapper.Map<PlayerDTO>(player);
         }
         [HttpPostAttribute(nameof(UndoPlayerDeleter))]
-        public async Task<Player> UndoPlayerDeleter(int playerID)
+        public async Task<PlayerDTO> UndoPlayerDeleter(int playerID)
         {
-            return await _playerService.UndoPlayerDeleter(playerID);
+            var player = await _playerService.UndoPlayerDeleter(playerID);
+            return _mapper.Map<PlayerDTO>(player);
         }
 
     }
