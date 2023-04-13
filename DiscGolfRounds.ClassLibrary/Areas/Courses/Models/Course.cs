@@ -10,7 +10,7 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
         [MaxLength(100)]
         public string Name { get; set; }
         public bool Deleted { get; set; }
-
+        [NotMapped]
         public List<CourseVariant> Variants { get; set; }
         
     }

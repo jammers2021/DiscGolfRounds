@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscGolfRounds.ClassLibrary", "DiscGolfRounds.ClassLibrary\DiscGolfRounds.ClassLibrary.csproj", "{D6709234-F260-479B-80CF-56D122200D38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscGolfRounds.ClassLibrary", "DiscGolfRounds.ClassLibrary\DiscGolfRounds.ClassLibrary.csproj", "{D6709234-F260-479B-80CF-56D122200D38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscGolfRounds.API", "DiscGolfRounds.API\DiscGolfRounds.API.csproj", "{2155F4F7-9FAE-4EC7-8DAD-988077E77348}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscGolfRounds.API", "DiscGolfRounds.API\DiscGolfRounds.API.csproj", "{2155F4F7-9FAE-4EC7-8DAD-988077E77348}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscGolfRounds.Tests", "DiscGolfRounds.Tests\DiscGolfRounds.Tests.csproj", "{C49451A5-23EA-4C2C-9BBE-4AB2A8CC8E12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2155F4F7-9FAE-4EC7-8DAD-988077E77348}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2155F4F7-9FAE-4EC7-8DAD-988077E77348}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2155F4F7-9FAE-4EC7-8DAD-988077E77348}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C49451A5-23EA-4C2C-9BBE-4AB2A8CC8E12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C49451A5-23EA-4C2C-9BBE-4AB2A8CC8E12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C49451A5-23EA-4C2C-9BBE-4AB2A8CC8E12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C49451A5-23EA-4C2C-9BBE-4AB2A8CC8E12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

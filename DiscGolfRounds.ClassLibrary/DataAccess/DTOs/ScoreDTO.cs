@@ -1,4 +1,5 @@
 ﻿using DiscGolfRounds.ClassLibrary.Areas.Courses.Models;
+using DiscGolfRounds.ClassLibrary.Areas.Rounds.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,24 +7,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
 
-namespace DiscGolfRounds.ClassLibrary.Areas.Rounds.Models
+namespace DiscGolfRounds.ClassLibrary.DataAccess.DTOs
 {
-    public class Score
+    public class ScoreDTO
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(Rounds))]
-        public int RoundID { get; set; }
-        [ForeignKey(nameof(Hole))]
-        public int HoleID { get; set; }
         public int ScoreOnHole { get; set; }
         public bool Deleted { get; set; }
-        [NotMapped]
-        public Hole Hole { get; set; }
-        [NotMapped]
-        public Round Round { get; set; }
+        public HoleDTO Hole { get; set; }
+        public RoundDTO Round { get; set; }
     }
 }
-

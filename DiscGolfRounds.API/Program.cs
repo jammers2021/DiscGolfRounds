@@ -30,6 +30,7 @@ namespace DiscGolfRounds.API
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IPlayerService, PlayerService>();
             builder.Services.AddScoped<IRoundService, RoundService>();
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             var app = builder.Build();
 
