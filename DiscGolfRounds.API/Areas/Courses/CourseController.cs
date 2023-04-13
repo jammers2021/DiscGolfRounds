@@ -13,19 +13,29 @@ namespace DiscGolfRounds.API.Areas.Courses
     public class CourseController : ControllerBase
     {
 
+        private readonly DiscGolfContext _context;
         private readonly ICourseService _courseService;
-        public CourseController(ICourseService courseCreator)
+        public CourseController(DiscGolfContext context, ICourseService courseCreator)
         {
+            _context = context;
             _courseService = courseCreator;
         }
 
         [HttpPost(nameof(CreateNewCourse))]
         public async Task<Course> CreateNewCourse(NewCourseRequest request)
         {
-            var course = await _courseService.CourseVariantCreatorByPar(request. courseName, request.variantName, request.holePars);
+            CourseService courseCreator = new(_context);
+            CourseVariant courseVariant = await courseCreator.CourseVariantCreatorByPar(request. courseName, request.variantName, request.holePars);
+            var existCheck = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
+            if (existCheck != null)
+                return null;
+            Course course = new();
+            course = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
 
             return course;
         }
+        //System.Text.Json.JsonException: A possible object cycle was detected.
+        //This can either be due to a cycle or if the object depth is larger than the maximum allowed depth of 32.
         
         [HttpGet (nameof(ViewAllCourses))]
         public async Task<List<Course>> ViewAllCourses()
