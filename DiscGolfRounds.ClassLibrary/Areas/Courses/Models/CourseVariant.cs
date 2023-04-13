@@ -15,11 +15,13 @@ namespace DiscGolfRounds.ClassLibrary.Areas.Courses.Models
         public string Name { get; set; }
         [ForeignKey(nameof(Courses))]
         public int CourseId { get; set; }
-        public Course Course { get; set; }
         public bool Deleted { get; set; }
-
+        [NotMapped]
+        public Course Course { get; set; }
+        [NotMapped]
+        public List<int> HoleIds { get; set; }
+        [NotMapped]
         public List<Hole> Holes { get; set; }
-
         [NotMapped]
         public int NumberOfHoles => Holes.Count;
         [NotMapped]

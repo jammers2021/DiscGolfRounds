@@ -1,12 +1,14 @@
 
-using DiscGolfRounds.ClassLibrary.Areas.Courses;
 using DiscGolfRounds.ClassLibrary.Areas.Courses.Interfaces;
+using DiscGolfRounds.ClassLibrary.Areas.Rounds.Interfaces;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using DiscGolfRounds.ClassLibrary.Areas.Courses;
 using DiscGolfRounds.ClassLibrary.Areas.Players;
 using DiscGolfRounds.ClassLibrary.Areas.Players.Interfaces;
 using DiscGolfRounds.ClassLibrary.Areas.Rounds;
-using DiscGolfRounds.ClassLibrary.Areas.Rounds.Interfaces;
+using Microsoft.Data.Sqlite;
 using DiscGolfRounds.ClassLibrary.DataAccess;
-using Microsoft.EntityFrameworkCore;
 
 namespace DiscGolfRounds.API
 {
@@ -21,6 +23,7 @@ namespace DiscGolfRounds.API
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+            var connectionString = builder.Configuration["ConnectionStrings:Sqlite"];
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<DiscGolfContext>(options =>
             {
@@ -30,13 +33,12 @@ namespace DiscGolfRounds.API
             builder.Services.AddScoped<ICourseService, CourseService>();
             builder.Services.AddScoped<IPlayerService, PlayerService>();
             builder.Services.AddScoped<IRoundService, RoundService>();
+            //Consider one service depending on numbers
+            //Remove constructors for models--Options class exception, but not relevant
+
+
 
             var app = builder.Build();
-
-            using (var scope = app.Services.CreateScope())
-            {
-                await scope.ServiceProvider.GetRequiredService<DiscGolfContext>().Database.EnsureCreatedAsync();
-            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
