@@ -22,7 +22,12 @@ namespace DiscGolfRounds.API.Areas.Courses
         [HttpPost(nameof(CreateNewCourse))]
         public async Task<Course> CreateNewCourse(NewCourseRequest request)
         {
-            var course = await _courseService.CourseVariantCreatorByPar(request. courseName, request.variantName, request.holePars);
+            CourseVariant courseVariant = await _courseService.CourseVariantCreatorByPar(request. courseName, request.variantName, request.holePars);
+            var existCheck = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
+            if (existCheck != null)
+                return null;
+            Course course = new();
+            course = _context.Courses.FirstOrDefault(c => c.Name == courseVariant.Course.Name);
 
             return course;
         }
